@@ -1,0 +1,12 @@
+node_modules/
+.next/
+.env
+__pycache__/
+*.pyc
+parsed_data/
+data/EDI_834_DATA/*
+!data/EDI_834_DATA/.gitkeep
+.venv/
+env/
+venv/
+*.db
