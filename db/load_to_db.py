@@ -101,29 +101,25 @@ def process_json_files():
         print("No parsed_data folder found.")
         return
 
-    # Find the newest numeric run folder
-    subdirs = [os.path.join(parsed_base, d) for d in os.listdir(parsed_base) 
+    # Find the newest date folder
+    subdirs = [d for d in os.listdir(parsed_base) 
                if os.path.isdir(os.path.join(parsed_base, d))]
     
-    max_folder_num = -1
-    latest_folder = None
-    for sd in subdirs:
-        folder_name = os.path.basename(sd)
-        try:
-            num = int(folder_name)
-            if num > max_folder_num:
-                max_folder_num = num
-                latest_folder = sd
-        except ValueError:
-            pass
+    import re
+    date_folders = [d for d in subdirs if re.match(r"^\d{4}-\d{2}-\d{2}$", d)]
 
-    if max_folder_num == -1 or not latest_folder:
-        print("No processed batch folders found in parsed_data/.")
+    if not date_folders:
+        print("No processed date folders found in parsed_data/.")
         return
+
+    # Sort descending to natively get the most recent date string
+    date_folders.sort(reverse=True)
+    latest_folder_name = date_folders[0]
+    latest_folder = os.path.join(parsed_base, latest_folder_name)
 
     files = glob.glob(os.path.join(latest_folder, "*.json"))
 
-    print(f"Found Run Batch #{max_folder_num}. Processing {len(files)} files...")
+    print(f"Found Run Batch for Date: {latest_folder_name}. Processing {len(files)} files...")
 
     if not files:
         print(f"No JSON files found in folder: {latest_folder}")

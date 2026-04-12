@@ -22,10 +22,14 @@ def read_root():
 
 @app.post("/api/upload")
 async def upload_file(file: UploadFile = File(...)):
-    # Ensure directory exists
-    os.makedirs(DATA_DIR, exist_ok=True)
+    import datetime
+    today_str = datetime.datetime.now().strftime("%Y-%m-%d")
+    target_dir = os.path.join(DATA_DIR, today_str)
     
-    file_path = os.path.join(DATA_DIR, file.filename)
+    # Ensure directory exists
+    os.makedirs(target_dir, exist_ok=True)
+    
+    file_path = os.path.join(target_dir, file.filename)
     
     try:
         content = await file.read()

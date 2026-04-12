@@ -5,6 +5,7 @@ __pycache__/
 *.pyc
 parsed_data/
 data/EDI_834_DATA/*
+synthetic_data/*
 !data/EDI_834_DATA/.gitkeep
 .venv/
 env/

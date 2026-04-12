@@ -30,7 +30,7 @@ def clean_database():
         conn.commit()
         conn.close()
         
-        print("✅ Database successfully wiped clean. All tables are intact but empty!")
+        print("SUCCESS: Database successfully wiped clean. All tables are intact but empty!")
 
     except mysql.connector.Error as err:
         print(f"Error: {err}")

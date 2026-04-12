@@ -215,30 +215,28 @@ def process_all_files():
 
     os.makedirs(base_output_folder, exist_ok=True)
 
-    files = glob.glob(f"{input_folder}/*.edi")
+    files = glob.glob(f"{input_folder}/**/*.edi", recursive=True)
     if not files:
         print("No .edi files found to process.")
         return
 
-    # Find the next run folder number
-    subdirs = [os.path.join(base_output_folder, d) for d in os.listdir(base_output_folder) 
-               if os.path.isdir(os.path.join(base_output_folder, d))]
-    
-    max_folder_num = 0
-    for sd in subdirs:
-        folder_name = os.path.basename(sd)
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    run_output_folder = os.path.join(base_output_folder, today_str)
+    os.makedirs(run_output_folder, exist_ok=True)
+
+    # Determine starting sequential number just for today's folder
+    existing_jsons = glob.glob(f"{run_output_folder}/EDI_834_MEMBER_*.json")
+    max_num = 0
+    for ej in existing_jsons:
+        filename = os.path.basename(ej)
         try:
-            num = int(folder_name)
-            if num > max_folder_num:
-                max_folder_num = num
+            num = int(filename.replace("EDI_834_MEMBER_", "").replace(".json", ""))
+            if num > max_num:
+                max_num = num
         except ValueError:
             pass
             
-    next_folder_num = max_folder_num + 1
-    run_output_folder = os.path.join(base_output_folder, str(next_folder_num))
-    os.makedirs(run_output_folder, exist_ok=True)
-    
-    next_num = 1
+    next_num = max_num + 1
 
     for file in files:
         with open(file, "r") as f:
